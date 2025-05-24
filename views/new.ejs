@@ -1,0 +1,42 @@
+  <% layout("/layouts/boilerplate") %>
+<body>
+  
+    <h2>Create your post</h2>
+    <div class="row">
+        <div class="col-8 offset-2">
+    <form action="http://localhost:3000/lists" method="post">
+        <div>
+            <label for="title" class="form-label">Title</label>
+        <input type="text"  name ="data[title]" id="title" class="form-control"  required><br><br>
+        </div>
+        <div>
+            <label for="img" class="form-label">Image link</label><br>
+            <input type="text"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url" required><br><br>
+        </div>
+        <div>
+            <label for="desc" class="form-label">Description</label><br>
+            <textarea   name ="data[desc]"id="desc" class="form-control" ></textarea> <br><br>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+            <label for="price" class="form-label">price</label><br>
+            <input type="text"  name ="data[price]" id="price" class="form-control" required><br><br>
+        </div>
+         <div class="col-md-8">
+            <label for="country" class="form-label">Country</label><br>
+            <input type="text"  name ="data[country]"class="form-control" id="country" required><br><br>
+        </div>
+        </div>
+        <div>
+            <label for="location" class="form-label">Location</label><br>
+            <input type="text"  name ="data[location]" class="form-control" id="location"required><br><br>
+        </div>
+        
+
+        <!-- <input type="text" name="data[country]" placeholder="image url" ><br><br> -->
+        <button class="btn btn-success"type="submit">Submit</button>
+        <a href="http://localhost:3000/lists"style="text-decoration :none"><button  class="btn btn-secondary">Back   </button></a><br><br>
+    </form>
+    </div>
+    </div>
+</body>

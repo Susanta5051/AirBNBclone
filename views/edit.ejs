@@ -1,0 +1,45 @@
+
+<body>
+    <h2>Edit your data</h2>
+    <div class="row mt-3">
+        <div class="col-8 offset-2">
+    <form action="http://localhost:3000/lists/<%=data._id%>/edit?_method=patch" method="POST" >
+
+        <div>
+            <label for="title" class="form-label">Title</label>
+        <input type="text"class="form-control" placeholder="title" name ="data[title]"  value="<%=data.title%>" ><br><br>
+        </div>
+
+        <div>
+            <label for="img" class="form-label">Image link</label><br>
+            <input type="text"class="form-control"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url"value="<%=data.image.url%>" required><br><br>
+        </div>
+
+         <div>
+            <label for="desc" class="form-label">Description</label><br>
+        <textarea  class="form-control"placeholder="Description" name ="data[desc]" id="desc"style="height:100px;"><%=data.description%></textarea> <br><br>
+        </div>
+
+         <div>
+            <label for="price" class="form-label">Price</label><br>
+            <input class="form-control" type="text" placeholder="price" id="price"name ="data[price]" value="<%=data.price%>"><br><br>
+        </div>
+       
+        <div>
+            <label for="location" class="form-label">Location</label><br>
+            <input type="text" placeholder="location" id="location"name ="data[location]"value="<%=data.location%>" ><br><br>
+        </div>
+
+        <div>
+            <label for="country" class="form-label">Country</label><br>
+            <input class="form-control"type="text" placeholder="country"id="country" name ="data[country]" value="<%=data.country%>"><br><br>
+        </div>
+
+        
+        <button type="submit" class="btn btn-success edit-btn">Submit</button>
+        <a href="http://localhost:3000/lists/<%=data._id%>" style="text-decoration :none"><button class="btn btn-secondary edit-btn">Back</button></a><br><br>
+    </form>
+     </div>
+    </div>
+    <% layout("/layouts/boilerplate") %>
+</body>

@@ -4,33 +4,38 @@
     <h2>Create your post</h2>
     <div class="row">
         <div class="col-8 offset-2">
-    <form action="http://localhost:3000/lists" method="post">
-        <div>
+       <form action="http://localhost:3000/lists" novalidate class="needs-validation"  method="post">
+            <div>
             <label for="title" class="form-label">Title</label>
-        <input type="text"  name ="data[title]" id="title" class="form-control"  required><br><br>
-        </div>
-        <div>
-            <label for="img" class="form-label">Image link</label><br>
-            <input type="text"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url" required><br><br>
-        </div>
-        <div>
-            <label for="desc" class="form-label">Description</label><br>
-            <textarea   name ="data[desc]"id="desc" class="form-control" ></textarea> <br><br>
-        </div>
-        <div class="row">
-        <div class="col-md-4">
-            <label for="price" class="form-label">price</label><br>
-            <input type="text"  name ="data[price]" id="price" class="form-control" required><br><br>
-        </div>
-         <div class="col-md-8">
-            <label for="country" class="form-label">Country</label><br>
-            <input type="text"  name ="data[country]"class="form-control" id="country" required><br><br>
-        </div>
-        </div>
-        <div>
-            <label for="location" class="form-label">Location</label><br>
-            <input type="text"  name ="data[location]" class="form-control" id="location"required><br><br>
-        </div>
+            <input type="text"  name ="data[title]" id="title" class="form-control"  required>
+            <div class="invalid-feedback"> Title is invalid</div><br><br>
+            </div>
+            <div>
+                <label for="img" class="form-label">Image link</label><br>
+                <input type="text"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url"><br><br>
+            </div>
+            <div>
+                <label for="desc" class="form-label">Description</label><br>
+                <textarea   name ="data[desc]"id="desc" class="form-control" ></textarea> 
+                <div class="valid-feedback"> Looking very good</div><br><br>
+            </div>
+            <div class="row">
+            <div class="col-md-4">
+                <label for="price" class="form-label">price</label><br>
+                <input type="text"  name ="data[price]" id="price" class="form-control" required>
+                <div class="invalid-feedback">Price is invalid</div><br><br>
+            </div>
+            <div class="col-md-8">
+                <label for="country" class="form-label">Country</label><br>
+                <input type="text"  name ="data[country]"class="form-control" id="country" required>
+                <div class="invalid-feedback"> Country is invalid</div><br><br>
+            </div>
+            </div>
+            <div>
+                <label for="location" class="form-label">Location</label><br>
+                <input type="text"  name ="data[location]" class="form-control" id="location"required>
+                <div class="invalid-feedback"> Location is invalid</div><br><br>
+            </div>
         
 
         <!-- <input type="text" name="data[country]" placeholder="image url" ><br><br> -->

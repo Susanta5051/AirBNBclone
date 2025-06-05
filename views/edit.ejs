@@ -3,16 +3,18 @@
     <h2>Edit your data</h2>
     <div class="row mt-3">
         <div class="col-8 offset-2">
-    <form action="http://localhost:3000/lists/<%=data._id%>/edit?_method=patch" method="POST" >
+    <form action="http://localhost:3000/lists/<%=data._id%>/edit?_method=patch"   class="needs-validation" novalidate method="POST" >
 
         <div>
             <label for="title" class="form-label">Title</label>
-        <input type="text"class="form-control" placeholder="title" name ="data[title]"  value="<%=data.title%>" ><br><br>
+        <input type="text"class="form-control" placeholder="title" name ="data[title]"  value="<%=data.title%>" required >
+        <div class="invalid-feedback">Title is required</div> <br><br>
         </div>
 
         <div>
             <label for="img" class="form-label">Image link</label><br>
-            <input type="text"class="form-control"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url"value="<%=data.image.url%>" required><br><br>
+            <input type="text"class="form-control"  name ="data[image][url]"id="img" class="form-control "placeholder="Enter image url"value="<%=data.image.url%>" required>
+            <div class="invalid-feedback">Image link is required</div><br><br>
         </div>
 
          <div>
@@ -22,17 +24,20 @@
 
          <div>
             <label for="price" class="form-label">Price</label><br>
-            <input class="form-control" type="text" placeholder="price" id="price"name ="data[price]" value="<%=data.price%>"><br><br>
+            <input class="form-control" type="text" placeholder="price" id="price"name ="data[price]" value="<%=data.price%>" required>
+            <div class="invalid-feedback">Price is required</div><br><br>
         </div>
        
         <div>
             <label for="location" class="form-label">Location</label><br>
-            <input type="text" placeholder="location" id="location"name ="data[location]"value="<%=data.location%>" ><br><br>
+            <input type="text"  class="form-control" placeholder="location" id="location"name ="data[location]"value="<%=data.location%>" required>
+            <div class="invalid-feedback">Location is required</div><br><br>
         </div>
 
         <div>
             <label for="country" class="form-label">Country</label><br>
-            <input class="form-control"type="text" placeholder="country"id="country" name ="data[country]" value="<%=data.country%>"><br><br>
+            <input class="form-control"type="text" placeholder="country"id="country" name ="data[country]" value="<%=data.country%>" required>
+            <div class="invalid-feedback">Country is required</div><br><br>
         </div>
 
         
@@ -42,4 +47,5 @@
      </div>
     </div>
     <% layout("/layouts/boilerplate") %>
+    <script src="/js/script.js"></script>
 </body>

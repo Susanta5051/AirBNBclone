@@ -7,6 +7,7 @@ const { data }=require("./alldata.js");
 // const alldata = require("./alldata.js");
 const methodOverride=require("method-override");
 const ejsMate=require('ejs-Mate');
+const validSchema =require("./schema.js");
 
 const wrapAsync =require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
@@ -46,7 +47,16 @@ async function main(){
 
 // list.insertMany(data);
 
-
+const validateData=(req,res,next)=>{
+      let {error}=validSchema.validate(req.body);
+      let errMsg=error.details.map((el)=>el.message).join(",");
+   if(error){
+    throw new ExpressError(400,errMsg);
+   }
+    else{
+     next();
+    }
+}
 
 
 app.get("/",(req,res)=>{
@@ -70,8 +80,9 @@ app.get("/lists/:id",wrapAsync(async (req,res)=>{
     })
 
 }));
-app.post("/lists", wrapAsync(async (req,res,next)=>{
-   
+app.post("/lists",validateData, wrapAsync(async (req,res,next)=>{
+
+ 
     const data=new list(req.body.data);
     console.log(data);
     await data.save().then(()=>{
@@ -86,7 +97,7 @@ app.get("/lists/:id/edit",wrapAsync(async (req,res)=>{
     res.render("edit.ejs",{data});
 }))
 
-app.patch("/lists/:id/edit",wrapAsync(async (req,res)=>{
+app.patch("/lists/:id/edit",validateData, wrapAsync(async (req,res)=>{
     const {id}=req.params;
     console.log(req.body.data)
     await list.findByIdAndUpdate(id,req.body.data).then(()=>{
@@ -108,6 +119,7 @@ app.all( /.*/,(req,res,next)=>{
 
 app.use((err,req,res,next)=>{
     let {statusCode=500,message="Something went wrong"}=err;
+    console.log(err.message);
     // res.status(statusCode).send(message);
     res.status(statusCode).render("error.ejs",{err}); 
 })

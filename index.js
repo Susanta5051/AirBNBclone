@@ -8,9 +8,11 @@ const { data }=require("./alldata.js");
 const methodOverride=require("method-override");
 const ejsMate=require('ejs-Mate');
 const validSchema =require("./schema.js");
+const Review = require("./models/reviews.js");
 
 const wrapAsync =require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const { log } = require("console");
 
 
 app.use(methodOverride("_method"));
@@ -69,10 +71,10 @@ app.get("/lists",wrapAsync(async (req,res)=>{
         res.render("alldata.ejs",{data});
     })
 }))
-app.get("/lists/new",wrapAsync((req,res)=>{
+app.get("/lists/new",(req,res)=>{
     
     res.render("new.ejs");
-}))
+})
 app.get("/lists/:id",wrapAsync(async (req,res)=>{
     const {id}=req.params;
     await list.findById(id).then((data)=>{
@@ -113,6 +115,21 @@ app.get("/lists/:id/delete",wrapAsync(async (req,res)=>{
     res.redirect("/lists");
 }))
 
+app.post("/lists/:id/reviews",wrapAsync(async (req,res,next)=>{
+    
+    const data= await list.findById(req.params.id);
+    const reviewData = new Review(req.body.review);
+
+    data.reviews.push(reviewData);
+    
+await reviewData.save();
+await data.save().then(()=>{
+    console.log("Review added successfully");
+    res.redirect(`/lists/${data._id}`);
+})
+    
+}))
+
 app.all( /.*/,(req,res,next)=>{
     next( new ExpressError(404,"Page not found") );
 })
@@ -127,3 +144,4 @@ app.use((err,req,res,next)=>{
 app.listen(3000,()=>{
     console.log("App is listening on port 3000");
 })
+

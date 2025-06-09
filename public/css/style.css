@@ -4,9 +4,9 @@ body{
     flex-direction: column;
     min-height: 100vh;
 }
-.bg-ag{
+/* .bg-ag{
     background-color: aquamarine !important;
-}
+} */
 .container{
     flex: 1;
 }

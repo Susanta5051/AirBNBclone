@@ -1,6 +1,6 @@
 const joi= require("joi");
 
-const validSchema =joi.object({
+module.exports.validSchema =joi.object({
     data:joi.object({
         title:joi.string().required(),
         desc:joi.string().required(),
@@ -15,4 +15,11 @@ const validSchema =joi.object({
     }).required(),
 });
 
-module.exports=validSchema;
+module.exports.reviewSchema=joi.object({
+    review:joi.object({
+        comment:joi.string().required().min(3).max(500),
+        rating:joi.number().min(1).max(5).required()
+    }).required(),
+    id:joi.string().required() 
+    
+})

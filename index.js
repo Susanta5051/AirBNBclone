@@ -77,9 +77,10 @@ app.get("/lists/new",(req,res)=>{
 })
 app.get("/lists/:id",wrapAsync(async (req,res)=>{
     const {id}=req.params;
-    await list.findById(id).then((data)=>{
-        res.render("details.ejs",{data});
-    })
+  
+   let data =  await list.findById(id).populate("reviews");
+    
+      res.render("details.ejs",{data});
 
 }));
 app.post("/lists",validateData, wrapAsync(async (req,res,next)=>{
@@ -128,6 +129,15 @@ await data.save().then(()=>{
     res.redirect(`/lists/${data._id}`);
 })
     
+}))
+app.delete("/lists/:id/reviews/:reviewID",wrapAsync(async(req,res,next)=>{
+    const {id,reviewID}=req.params;
+    await list.findByIdAndUpdate(id,{$pull:{ reviews: reviewID }});
+   
+    await Review.findByIdAndDelete(reviewID).then(()=>{
+        console.log("Review deleted successfully");
+    })
+    res.redirect(`/lists/${id}`);
 }))
 
 app.all( /.*/,(req,res,next)=>{

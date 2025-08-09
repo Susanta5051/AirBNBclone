@@ -2,17 +2,22 @@ const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
 const path=require("path");
+const wrapAsync=require("./utils/wrapAsync.js");
+const ExpressError=require("./utils/ExpressError.js");
 const list=require("./models/lists.js");
 const { data }=require("./alldata.js");
 // const alldata = require("./alldata.js");
 const methodOverride=require("method-override");
 const ejsMate=require('ejs-Mate');
-const validSchema =require("./schema.js");
-const Review = require("./models/reviews.js");
+// const validSchema =require("./schema.js");
+// const Review = require("./models/reviews.js");
+const session = require("express-session");
+const flash=require("connect-flash");
 
-const wrapAsync =require("./utils/wrapAsync.js");
-const ExpressError = require("./utils/ExpressError.js");
+
 const { log } = require("console");
+const lists=require("./routes/lists.js");
+const reviews = require("./routes/reviews.js");
 
 
 app.use(methodOverride("_method"));
@@ -23,6 +28,18 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"public")));
+
+app.use(session(
+   {secret:"mysuperSecrete",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{
+        expires:Date.now()+7*24*60*60*1000,
+        maxAge:7*24*60*60*1000,
+        httpOnly:true,
+    }}
+));
+app.use(flash());
 
 
 main()
@@ -49,107 +66,36 @@ async function main(){
 
 // list.insertMany(data);
 
-const validateData=(req,res,next)=>{
-      let {error}=validSchema.validate(req.body);
-      let errMsg=error.details.map((el)=>el.message).join(",");
-   if(error){
-    throw new ExpressError(400,errMsg);
-   }
-    else{
-     next();
-    }
-}
 
+
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    next();
+})
 
 app.get("/",(req,res)=>{
     res.render("home.ejs");
 })
 
-app.get("/lists",wrapAsync(async (req,res)=>{
-    await list.find({})
-    .then((data)=>{
-        res.render("alldata.ejs",{data});
-    })
-}))
-app.get("/lists/new",(req,res)=>{
-    
-    res.render("new.ejs");
-})
-app.get("/lists/:id",wrapAsync(async (req,res)=>{
-    const {id}=req.params;
-  
-   let data =  await list.findById(id).populate("reviews");
-    
-      res.render("details.ejs",{data});
 
-}));
-app.post("/lists",validateData, wrapAsync(async (req,res,next)=>{
 
- 
-    const data=new list(req.body.data);
-    console.log(data);
-    await data.save().then(()=>{
-        console.log("Data saved successfully");
-    })
-    res.redirect("/lists");
-}));
+app.use("/lists",lists);
+app.use("/lists/:id/reviews",reviews);
 
-app.get("/lists/:id/edit",wrapAsync(async (req,res)=>{
-    const {id}=req.params;
-    const data=await list.findById(id);
-    res.render("edit.ejs",{data});
-}))
 
-app.patch("/lists/:id/edit",validateData, wrapAsync(async (req,res)=>{
-    const {id}=req.params;
-    console.log(req.body.data)
-    await list.findByIdAndUpdate(id,req.body.data).then(()=>{
-        console.log("Data updated successfully");
-    })
-    res.redirect(`/lists/${id}`);
-}))
-app.get("/lists/:id/delete",wrapAsync(async (req,res)=>{
-    const {id}=req.params;
-    await list.findByIdAndDelete(id).then((result)=>{
-        console.log(result);
-    })
-    res.redirect("/lists");
-}))
 
-app.post("/lists/:id/reviews",wrapAsync(async (req,res,next)=>{
-    
-    const data= await list.findById(req.params.id);
-    const reviewData = new Review(req.body.review);
-
-    data.reviews.push(reviewData);
-    
-await reviewData.save();
-await data.save().then(()=>{
-    console.log("Review added successfully");
-    res.redirect(`/lists/${data._id}`);
-})
-    
-}))
-app.delete("/lists/:id/reviews/:reviewID",wrapAsync(async(req,res,next)=>{
-    const {id,reviewID}=req.params;
-    await list.findByIdAndUpdate(id,{$pull:{ reviews: reviewID }});
-   
-    await Review.findByIdAndDelete(reviewID).then(()=>{
-        console.log("Review deleted successfully");
-    })
-    res.redirect(`/lists/${id}`);
-}))
 
 app.all( /.*/,(req,res,next)=>{
     next( new ExpressError(404,"Page not found") );
 })
 
-app.use((err,req,res,next)=>{
-    let {statusCode=500,message="Something went wrong"}=err;
-    console.log(err.message);
-    // res.status(statusCode).send(message);
-    res.status(statusCode).render("error.ejs",{err}); 
-})
+// app.use((err,req,res,next)=>{
+//     let {statusCode=500,message="Something went wrong"}=err;
+//     console.log(err.message);
+//     // res.status(statusCode).send(message);
+//     res.status(statusCode).render("error.ejs",{err}); 
+// })
 
 app.listen(3000,()=>{
     console.log("App is listening on port 3000");

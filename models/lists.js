@@ -23,7 +23,11 @@ const ListSchema =new Schema({
             type:Schema.Types.ObjectId,
             ref:"Review"
         }
-    ]
+    ],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User"
+    },
 });
 
 const List =mongoose.model("List",ListSchema);

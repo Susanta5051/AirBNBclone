@@ -20,7 +20,7 @@ let reviewSchema=joi.object({
         comment:joi.string().required().min(3).max(500),
         rating:joi.number().min(1).max(5).required()
     }).required(),
-    id:joi.string().required() 
+    // id:joi.string().required() 
     
 })
 

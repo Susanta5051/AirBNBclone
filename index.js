@@ -5,8 +5,8 @@ const path=require("path");
 const wrapAsync=require("./utils/wrapAsync.js");
 const ExpressError=require("./utils/ExpressError.js");
 const list=require("./models/lists.js");
-const { data }=require("./alldata.js");
-// const alldata = require("./alldata.js");
+// const { data }=require("./alldata.js");
+const alldata = require("./alldata.js");
 const methodOverride=require("method-override");
 const ejsMate=require('ejs-Mate');
 // const validSchema =require("./schema.js");
@@ -15,9 +15,15 @@ const session = require("express-session");
 const flash=require("connect-flash");
 
 
+
 const { log } = require("console");
-const lists=require("./routes/lists.js");
-const reviews = require("./routes/reviews.js");
+const listsRouter=require("./routes/lists.js");
+const reviewsRouter = require("./routes/reviews.js");
+const userRouter= require("./routes/user.js");
+
+const passport= require("passport");
+const strategy=require("passport-local");
+const User=require("./models/user.js");
 
 
 app.use(methodOverride("_method"));
@@ -40,6 +46,12 @@ app.use(session(
     }}
 ));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new strategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 main()
@@ -64,6 +76,8 @@ async function main(){
 //     console.log("Data saved successfully");
 // })
 
+
+
 // list.insertMany(data);
 
 
@@ -71,17 +85,29 @@ async function main(){
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
+    res.locals.currUser=req.user;
     next();
 })
 
 app.get("/",(req,res)=>{
     res.render("home.ejs");
 })
+// app.get("/demo",async (req,res)=>{
+//     let fakeuser=new User(
+//         {email:"dem",
+//         username:"Sosanta"
+//     })
+
+//     let resisterUser=await User.register(fakeuser,"1234");
+//     res.send(resisterUser);
+// })
 
 
 
-app.use("/lists",lists);
-app.use("/lists/:id/reviews",reviews);
+app.use("/lists",listsRouter);
+app.use("/lists/:id/reviews",reviewsRouter);
+app.use("/",userRouter);
+
 
 
 
